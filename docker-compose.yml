@@ -1,0 +1,11 @@
+version: "2"
+services:
+    redis:
+        image: redis:alpine
+    workspace:
+        build: .
+        volumes:
+            - ./source:/root/source
+        links:
+            - redis
+
