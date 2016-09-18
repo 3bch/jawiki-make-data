@@ -2,10 +2,20 @@ version: "2"
 services:
     redis:
         image: redis:alpine
+        volumes:
+            - ./cache/redis:/data
+        command: redis-server --appendonly yes
+        container_name: jawiki_redis
     workspace:
-        build: .
+        build: ./workspace
         volumes:
             - ./source:/root/source
+            - ./config:/root/config
+            - ./cache/wiki:/root/data
+            - ./result:/root/result
         links:
             - redis
+        environment:
+            - TZ=Asia/Tokyo
+        container_name: jawiki_workspace
 

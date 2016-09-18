@@ -1,2 +1,5 @@
 /source/*
-!/source/.gitkeep
+/cache/*/*
+/result/*
+/log/*
+!.gitkeep
