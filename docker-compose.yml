@@ -7,7 +7,7 @@ services:
         command: redis-server --appendonly yes
         container_name: jawiki_redis
     workspace:
-        build: 3bch/jawiki-make-data
+        image: 3bch/jawiki-make-data
         volumes:
             - ./source:/root/source
             - ./config:/root/config
