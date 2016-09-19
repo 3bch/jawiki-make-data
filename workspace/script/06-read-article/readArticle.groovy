@@ -37,9 +37,17 @@ if (config.data.includeAll) {
 }
 
 if (config.cache.use06) {
+    def parser = new JsonSlurper()
+
     categories = categories.findAll { category ->
         def meta = new File(category.dir, 'meta.json')
-        return !meta.exists()
+        if (!meta.exists()) {
+            return true
+        }
+
+        def info = jedis.hmget("jawiki:category:name:${category.name}:meta", 'title', 'depth')
+        def json = parser.parse(meta)
+        return json.title != info[0] || json.depth != info[1]
     }
 }
 
@@ -176,6 +184,12 @@ new File(xmlPath).withInputStream { input ->
             count: category.count
         )
         metaFile.write(json.toPrettyString(), 'UTF-8')
+    }
+
+    new File(cacheDir, 'category.list').withPrintWriter('UTF-8') { writer ->
+        categories.each { category ->
+            writer.println(category.name)
+        }
     }
 
     println "FINISH: $n"

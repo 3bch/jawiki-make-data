@@ -5,11 +5,30 @@
 
 ## 利用方法
 
-※ 実行には docker-compse が必要です
-
 * `./config/config.groovy` に出力したいカテゴリを設定する
 * `./make-data.sh` を実行する
 * `./resulｔ` に `<timestamp>-tar.xz` ファイルができる
+
+  * `data` 以下に各カテゴリのドキュメントがあります
+  * `config.groovy` に実行時の設定があります
+
+
+### 利用における注意
+
+* 実行には docker-compose が必要です
+* 実行すると Docker 上で redis が起動します
+
+  * 自動では stop しません
+  * `./cache/redis` に redis 上のデータは保存されます
+
+* 実行すると `./cache/wiki` 上に多くのテキストが展開されます
+
+  * 自動では削除されません
+
+* 初回実行時に [Wikipedia 日本語版データベース・ダンプ](https://dumps.wikimedia.org/jawiki/) を `./source` にダウンロードします
+
+  * `cache.clear` に関わらず、ダウンロード済みであればそのファイルを利用します
+  * データを最新にしたい場合は `./source` に落としたファイルを削除して実行してください
 
 ## 設定方法
 

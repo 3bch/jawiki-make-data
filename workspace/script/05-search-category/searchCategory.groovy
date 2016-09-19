@@ -21,9 +21,6 @@ def categories = config.data.categories.collect { name, info ->
 
 
 def printPage(categoryName, id, parents, pageSet, depthLimit) {
-    if (depthLimit < parents.size()) {
-        return
-    }
     if (pageSet.contains(id)) {
         return
     }
@@ -46,7 +43,14 @@ def printPage(categoryName, id, parents, pageSet, depthLimit) {
 
     def len = jedis.llen(key)
     def childIds = jedis.lrange(key, 0, len)
+
+    if (depthLimit <= parents.size()) {
+        return
+    }
+
     def newParents = [page[1], *parents]
+    println("SubCategory: ${newParents.join(' -> ')}")
+
     childIds.each { childId ->
         printPage(categoryName, childId, newParents, pageSet, depthLimit)
     }
@@ -57,8 +61,12 @@ categories.each { category ->
     def metaKey = "jawiki:category:name:${category.name}:meta"
 
     if (config.cache.use05 && jedis.exists(metaKey)) {
-        println "Skip search $category.name"
-        return
+        def meta = jedis.hmget(metaKey, 'title', 'depth')
+
+        if (meta[0] == category.title && meta[1] == (category.depth as String)) {
+            println "Skip search $category.name"
+            return
+        }
     }
 
     jedis.del(metaKey)
