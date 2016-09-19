@@ -16,5 +16,5 @@ make_data () {
         docker-compose up    workspace
 }
 
-make_data | tee log/$(date +'%Y-%m-%d').log
+make_data | tee log/$(date +'%Y%m%d-%H%M%S').log
 
