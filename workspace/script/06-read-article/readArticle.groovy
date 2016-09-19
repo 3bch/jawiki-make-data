@@ -36,6 +36,12 @@ if (config.data.includeAll) {
     ]
 }
 
+new File(cacheDir, 'category.list').withPrintWriter('UTF-8') { writer ->
+    categories.each { category ->
+        writer.println(category.name)
+    }
+}
+
 if (config.cache.use06) {
     def parser = new JsonSlurper()
 
@@ -184,12 +190,6 @@ new File(xmlPath).withInputStream { input ->
             count: category.count
         )
         metaFile.write(json.toPrettyString(), 'UTF-8')
-    }
-
-    new File(cacheDir, 'category.list').withPrintWriter('UTF-8') { writer ->
-        categories.each { category ->
-            writer.println(category.name)
-        }
     }
 
     println "FINISH: $n"
